@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{base::layout(~{::section})}">
+      th:replace="base::layout(~{::section})">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
 <section class="text-center">
-    <h2>Profile Page !</h2>
+    <h2>Admin Profile Page !</h2>
     <h6>Name:[[${user.name}]]</h6>
     <h6>Email:[[${user.email}]]</h6>
     <h6>Mo:[[${user.mobile_no}]]</h6>
