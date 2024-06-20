@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="base::layout(~{::section})">
+<head>
+    <meta charset="UTF-8">
+    <title>Change Password</title>
+</head>
+<body>
+    <section>
+        <div class="container p-3">
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="card">
+                        <div class="card-header text-center fs-4">Login Page</div>
+                        <th:block th:if="${session.msg}">
+                            <p class="text-center text-success fs-4">[[${session.msg}]]</p>
+                            <th:block th:text="${@userServiceImpl.removeSessionMsg()}"></th:block>
+                        </th:block>
+                        <div class="card-body">
+                            <form action="updatePass" method="post">
+                                <!--<div class="mb-3">
+                                    <label for="exampleInputEmail1">Email address</label>
+                                    <input type="email" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                                </div>-->
+                                <div class="mb-3">
+                                    <label for="exampleInputPassword1">Current Password</label>
+                                    <input name="oldPass" type="password" class="form-control" id="exampleInputPassword1" placeholder="Current Password">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="exampleInputPassword2">New Password</label>
+                                    <input name="newPass" type="password" class="form-control" id="exampleInputPassword2" placeholder="New Password">
+                                </div>
+                                <button type="submit" class="btn btn-primary col-md-12">Update</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</body>
+</html>

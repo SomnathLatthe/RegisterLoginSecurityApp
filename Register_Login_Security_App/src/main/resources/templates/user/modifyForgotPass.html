@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="base::layout(~{::section})">
+<head>
+    <meta charset="UTF-8">
+    <title>Forgot Password</title>
+</head>
+<body>
+<section>
+    <div class="container p-3">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header text-center fs-4">Forgot Password</div>
+                    <th:block th:if="${param.error}">
+                        <p class="text-center text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+                    </th:block>
+                    <th:block th:if="${session.msg}">
+                        <p class="text-center text-success fs-4">[[${session.msg}]]</p>
+                        <th:block th:text="${@userServiceImpl.removeSessionMsg()}"></th:block>
+                    </th:block>
+                    <div class="card-body">
+                        <form action="forgotPass" method="post">
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1">Email address</label>
+                                <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputMobile_no">Mobile Number</label>
+                                <input name="mobileNo" type="number" class="form-control" id="exampleInputMobile_no" placeholder="Mobile no.">
+                            </div>
+                            <button type="submit" class="btn btn-primary col-md-12">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+</body>
+</html>

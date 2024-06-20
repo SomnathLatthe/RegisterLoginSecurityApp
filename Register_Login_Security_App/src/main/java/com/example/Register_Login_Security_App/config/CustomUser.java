@@ -38,7 +38,7 @@ public class CustomUser implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;//UserDetails.super.isAccountNonLocked();
+        return user.isAccountNonLocked();//UserDetails.super.isAccountNonLocked();
     }
 
     @Override
@@ -49,5 +49,13 @@ public class CustomUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return user.isEnable();//UserDetails.super.isEnabled();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

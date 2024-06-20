@@ -4,6 +4,7 @@ import com.example.Register_Login_Security_App.entity.User;
 import com.example.Register_Login_Security_App.repository.UserRepo;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,9 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepo userRepo;
@@ -30,6 +33,11 @@ public class UserServiceImpl implements UserService{
         user.setRole("ROLE_USER");
         user.setEnable(false);
         user.setVerificationCode(UUID.randomUUID().toString());
+
+        user.setAccountNonLocked(true);
+        user.setLockTime(null);
+        user.setFailedAttempt(0);
+
         User newuser=userRepo.save(user);
         if(newuser!=null)
         {
@@ -86,5 +94,43 @@ public class UserServiceImpl implements UserService{
             return true;
         }
         //return false;
+    }
+
+//    private static final long lock_duration_time=24*60*60*1000;
+    private static final long lock_duration_time=120000;//2 min
+    public static final long ATTEMPT_TIME=3;
+
+    @Override
+    public void increaseFailedAttempt(User user) {
+        int attempt=user.getFailedAttempt()+1;
+        userRepo.updateFailedAttempt(attempt,user.getEmail());
+    }
+
+    @Override
+    public void resetAttempt(String email) {
+        userRepo.updateFailedAttempt(0,email);
+    }
+
+    @Override
+    public void lock(User user) {
+        user.setAccountNonLocked(false);
+        user.setLockTime(new Date());
+        userRepo.save(user);
+    }
+
+    @Override
+    public boolean unlockAccountTimeExpired(User user) {
+        long lockTimeIntMills=user.getLockTime().getTime();
+        long currentTimeMillis=System.currentTimeMillis();
+        if(lockTimeIntMills+lock_duration_time < currentTimeMillis)
+        {
+            user.setAccountNonLocked(true);
+            user.setLockTime(null);
+            user.setFailedAttempt(0);
+            userRepo.save(user);
+            return true;
+        }
+
+        return false;
     }
 }

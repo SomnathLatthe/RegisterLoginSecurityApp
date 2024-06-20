@@ -16,6 +16,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Autowired
     public CustomAuthSuccessHandler successHandler;
+    @Autowired
+    public CustomFailureHandler failureHandler;
     @Bean
     public BCryptPasswordEncoder getBCryptPasswordEncoder()
     {
@@ -40,19 +42,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
-        /*http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/register", "/signin", "/saveUser").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/signin").loginProcessingUrl("/userLogin").defaultSuccessUrl("/user/profile")
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .permitAll()
-                );*/
+
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
@@ -63,6 +53,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/signin").loginProcessingUrl("/userLogin")
+                                .failureHandler(failureHandler)
                         .successHandler(successHandler).permitAll()
                         //.defaultSuccessUrl("/user/profile")
                 )

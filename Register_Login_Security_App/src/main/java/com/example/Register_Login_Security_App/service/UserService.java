@@ -9,4 +9,8 @@ public interface UserService {
 
     public void sendMail(User user,String url);
     public boolean verifyAccount(String verificationCode);
+    public void increaseFailedAttempt(User user);
+    public void resetAttempt(String email);
+    public void lock(User user);
+    public boolean unlockAccountTimeExpired(User user);
 }

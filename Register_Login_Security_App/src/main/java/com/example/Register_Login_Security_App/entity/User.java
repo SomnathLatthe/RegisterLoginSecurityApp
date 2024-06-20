@@ -5,18 +5,23 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.util.Date;
+
 @Entity
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    private String mobile_no;
+    private String mobileNo;
     private String email;
     private String password;
     private String role;
     private boolean enable;
     private String verificationCode;
+    private boolean isAccountNonLocked;
+    private int failedAttempt;
+    private Date lockTime;
 
     public boolean isEnable() {
         return enable;
@@ -50,12 +55,12 @@ public class User {
         this.name = name;
     }
 
-    public String getMobile_no() {
-        return mobile_no;
+    public String getMobileNo() {
+        return mobileNo;
     }
 
-    public void setMobile_no(String mobile_no) {
-        this.mobile_no = mobile_no;
+    public void setMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
     }
 
     public String getEmail() {
@@ -82,12 +87,36 @@ public class User {
         this.role = role;
     }
 
+    public boolean isAccountNonLocked() {
+        return isAccountNonLocked;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        isAccountNonLocked = accountNonLocked;
+    }
+
+    public int getFailedAttempt() {
+        return failedAttempt;
+    }
+
+    public void setFailedAttempt(int failedAttempt) {
+        this.failedAttempt = failedAttempt;
+    }
+
+    public Date getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(Date lockTime) {
+        this.lockTime = lockTime;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", mobile_no='" + mobile_no + '\'' +
+                ", mobileNo='" + mobileNo + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role='" + role + '\'' +

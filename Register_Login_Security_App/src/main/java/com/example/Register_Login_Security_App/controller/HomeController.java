@@ -10,9 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -23,9 +21,11 @@ public class HomeController {
     private UserService userService;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     @ModelAttribute
     public void commonUser(Principal p,Model model)
-    {
+    {//fetch user each time,when it comes in this controller
         if(p!=null)
         {
             String email=p.getName();
@@ -80,18 +80,45 @@ public class HomeController {
         }
         return "message";
     }
-   /* @GetMapping("/user/profile")
-    public String profile(Principal principal, Model model)
+
+
+    @GetMapping("/modifyForgotPass")
+    public String modifyForgotPass()
     {
-        String email= principal.getName();
-        System.out.println("***in profile, email:"+email);
-        User user=userRepo.findByEmail(email);
-        model.addAttribute("user",user);
-        return "profile";
+        return "user/modifyForgotPass";
     }
-    @GetMapping("/user/home")
-    public String getHome()
+
+    @PostMapping("/forgotPass")
+    public String forgotPass(@RequestParam("email") String email,
+                             @RequestParam("mobileNo") String mobileNo,HttpSession session)
     {
-        return "home";
-    }*/
+        User user=userRepo.findByEmailAndMobileNo(email,mobileNo);
+        if(user!=null)
+        {
+            return "redirect:/modifyResetPass/"+user.getId();
+        }
+        session.setAttribute("msg","Invalid Email & Mobile ");
+        return "redirect:/modifyForgotPass";
+    }
+
+    @GetMapping("/modifyResetPass/{id}")
+    public String modifyResetPass(@PathVariable int id,Model model)
+    {
+        model.addAttribute("id",id);
+        return "user/modifyResetPass";
+    }
+
+    @PostMapping("/resetPass")
+    public String resetPass(@RequestParam("newPass") String newPass,
+                            @RequestParam("confirmPass") String confirmPass,@RequestParam("id") Integer id,HttpSession session)
+    {
+        User user=userRepo.findById(id).get();
+        String encrytPwd= bCryptPasswordEncoder.encode(newPass);
+        user.setPassword(encrytPwd);
+        User pwdUpdateUser = userRepo.save(user);
+
+        session.setAttribute("msg","Password changed successfully !");
+
+        return "redirect:/modifyForgotPass";
+    }
 }
